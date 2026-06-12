@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GG Condensed Pricing Widget</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css?v=1">
+</head>
+<body>
+
+<div id="ggSimplePricingWidget">
+  <div class="gg-sp-left">
+    <div class="gg-sp-kicker">Registration Cost Estimator</div>
+
+    <div class="gg-sp-line">
+      I am
+      <select id="ggSpMode">
+        <option value="individual">an individual</option>
+        <option value="group">registering for a group</option>
+      </select>.
+    </div>
+
+    <div id="ggSpIndividualFlow">
+      <div class="gg-sp-line">
+        I am
+        <select id="ggSpLived">
+          <option value="no">not requesting</option>
+          <option value="yes">requesting</option>
+        </select>
+        the lived experience scholarship.
+      </div>
+
+      <div class="gg-sp-note" id="ggSpLivedNote">
+        Limited financial scholarships are available to those who have been directly impacted by child protection or child welfare system involvement, including individuals with lived experience in foster care. We ask that you discern your financial need when requesting a scholarship.
+      </div>
+
+      <div class="gg-sp-line">
+        I am
+        <select id="ggSpStudent">
+          <option value="no">not a student</option>
+          <option value="yes">a student</option>
+        </select>.
+      </div>
+
+      <div class="gg-sp-line">
+        I am
+        <select id="ggSpCeu">
+          <option value="no">not claiming</option>
+          <option value="yes">claiming</option>
+        </select>
+        Continuing Education Units (CEUs).
+      </div>
+
+      <div class="gg-sp-line">
+        I want to register for
+        <select id="ggSpEvent">
+          <option value="global">the Global Gathering only</option>
+          <option value="skill">Skill Building Institutes only</option>
+          <option value="both">both the Global Gathering and Skill Building Institutes</option>
+        </select>.
+      </div>
+
+      <div class="gg-sp-line" id="ggSpSkillLine">
+        For Skill Building Institutes, I am choosing
+        <select id="ggSpSkillLength">
+          <option value="half">a half day</option>
+          <option value="full">a full day</option>
+        </select>.
+      </div>
+
+      <div class="gg-sp-line" id="ggSpEarlyLine">
+        I am registering
+        <select id="ggSpEarly">
+          <option value="before">on or before July 31, 2026</option>
+          <option value="after">after July 31, 2026</option>
+        </select>.
+      </div>
+    </div>
+
+    <div id="ggSpGroupFlow">
+      <div class="gg-sp-line">
+        My group has
+        <input id="ggSpGroupSize" type="number" min="10" value="10">
+        Global Gathering registrations.
+      </div>
+
+      <div class="gg-sp-line">
+        Group members are
+        <select id="ggSpGroupAddons">
+          <option value="no">not claiming CEUs or participating in Skill Building Institutes</option>
+          <option value="yes">claiming CEUs and/or participating in Skill Building Institutes</option>
+        </select>.
+      </div>
+
+      <div id="ggSpGroupAddonLines">
+        <div class="gg-sp-line">
+          <input id="ggSpGroupSkills" type="number" min="0" value="0">
+          are participating in half-day Skill Building Institutes.
+        </div>
+
+        <div class="gg-sp-line">
+          <input id="ggSpGroupCeus" type="number" min="0" value="0">
+          are claiming CEUs.
+        </div>
+      </div>
+
+      <div class="gg-sp-line">
+        The group is registering
+        <select id="ggSpGroupEarly">
+          <option value="before">on or before July 31, 2026</option>
+          <option value="after">after July 31, 2026</option>
+        </select>.
+      </div>
+    </div>
+  </div>
+
+  <div class="gg-sp-right">
+    <div class="gg-sp-total-label" id="ggSpTotalLabel">Estimated Individual Registration Cost</div>
+    <div class="gg-sp-total" id="ggSpTotal">$157.50</div>
+    <div class="gg-sp-summary" id="ggSpSummary"></div>
+    <div class="gg-sp-breakdown" id="ggSpBreakdown"></div>
+    <div class="gg-sp-nudge" id="ggSpNudge"></div>
+  </div>
+</div>
+
+<script src="script.js?v=1"></script>
+</body>
+</html>
