@@ -5,125 +5,117 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>GG Condensed Pricing Widget</title>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=1">
+  <link rel="stylesheet" href="styles.css?v=2">
 </head>
 <body>
 
-<div id="ggSimplePricingWidget">
-  <div class="gg-sp-left">
-    <div class="gg-sp-kicker">Registration Cost Estimator</div>
+<div id="ggPriceWidget">
+  <div class="price-line" id="stepMode">
+    I am
+    <select id="mode">
+      <option value="">select one</option>
+      <option value="individual">an individual</option>
+      <option value="group">registering for a group</option>
+    </select>.
+  </div>
 
-    <div class="gg-sp-line">
+  <!-- Individual flow -->
+  <div id="individualFlow">
+    <div class="price-line step" id="stepLived">
       I am
-      <select id="ggSpMode">
-        <option value="individual">an individual</option>
-        <option value="group">registering for a group</option>
+      <select id="lived">
+        <option value="">select one</option>
+        <option value="no">not requesting</option>
+        <option value="yes">requesting</option>
+      </select>
+      the lived experience scholarship.
+    </div>
+
+    <div class="price-line step" id="stepStudent">
+      I am
+      <select id="student">
+        <option value="">select one</option>
+        <option value="no">not a student</option>
+        <option value="yes">a student</option>
       </select>.
     </div>
 
-    <div id="ggSpIndividualFlow">
-      <div class="gg-sp-line">
-        I am
-        <select id="ggSpLived">
-          <option value="no">not requesting</option>
-          <option value="yes">requesting</option>
-        </select>
-        the lived experience scholarship.
-      </div>
-
-      <div class="gg-sp-note" id="ggSpLivedNote">
-        Limited financial scholarships are available to those who have been directly impacted by child protection or child welfare system involvement, including individuals with lived experience in foster care. We ask that you discern your financial need when requesting a scholarship.
-      </div>
-
-      <div class="gg-sp-line">
-        I am
-        <select id="ggSpStudent">
-          <option value="no">not a student</option>
-          <option value="yes">a student</option>
-        </select>.
-      </div>
-
-      <div class="gg-sp-line">
-        I am
-        <select id="ggSpCeu">
-          <option value="no">not claiming</option>
-          <option value="yes">claiming</option>
-        </select>
-        Continuing Education Units (CEUs).
-      </div>
-
-      <div class="gg-sp-line">
-        I want to register for
-        <select id="ggSpEvent">
-          <option value="global">the Global Gathering only</option>
-          <option value="skill">Skill Building Institutes only</option>
-          <option value="both">both the Global Gathering and Skill Building Institutes</option>
-        </select>.
-      </div>
-
-      <div class="gg-sp-line" id="ggSpSkillLine">
-        For Skill Building Institutes, I am choosing
-        <select id="ggSpSkillLength">
-          <option value="half">a half day</option>
-          <option value="full">a full day</option>
-        </select>.
-      </div>
-
-      <div class="gg-sp-line" id="ggSpEarlyLine">
-        I am registering
-        <select id="ggSpEarly">
-          <option value="before">on or before July 31, 2026</option>
-          <option value="after">after July 31, 2026</option>
-        </select>.
-      </div>
+    <div class="price-line step" id="stepCeu">
+      I am
+      <select id="ceu">
+        <option value="">select one</option>
+        <option value="no">not claiming</option>
+        <option value="yes">claiming</option>
+      </select>
+      Continuing Education Units (CEUs).
     </div>
 
-    <div id="ggSpGroupFlow">
-      <div class="gg-sp-line">
-        My group has
-        <input id="ggSpGroupSize" type="number" min="10" value="10">
-        Global Gathering registrations.
-      </div>
+    <div class="price-line step" id="stepEvent">
+      I want to register for
+      <select id="event">
+        <option value="">select one</option>
+        <option value="global">the Global Gathering only</option>
+        <option value="skill">Skill Building Institutes only</option>
+        <option value="both">both the Global Gathering and Skill Building Institutes</option>
+      </select>.
+    </div>
 
-      <div class="gg-sp-line">
-        Group members are
-        <select id="ggSpGroupAddons">
-          <option value="no">not claiming CEUs or participating in Skill Building Institutes</option>
-          <option value="yes">claiming CEUs and/or participating in Skill Building Institutes</option>
-        </select>.
-      </div>
+    <div class="price-line step" id="stepSkillLength">
+      For Skill Building Institutes, I am choosing
+      <select id="skillLength">
+        <option value="">select one</option>
+        <option value="half">a half day</option>
+        <option value="full">a full day</option>
+      </select>.
+    </div>
 
-      <div id="ggSpGroupAddonLines">
-        <div class="gg-sp-line">
-          <input id="ggSpGroupSkills" type="number" min="0" value="0">
-          are participating in half-day Skill Building Institutes.
-        </div>
-
-        <div class="gg-sp-line">
-          <input id="ggSpGroupCeus" type="number" min="0" value="0">
-          are claiming CEUs.
-        </div>
-      </div>
-
-      <div class="gg-sp-line">
-        The group is registering
-        <select id="ggSpGroupEarly">
-          <option value="before">on or before July 31, 2026</option>
-          <option value="after">after July 31, 2026</option>
-        </select>.
-      </div>
+    <div class="price-line step" id="stepEarly">
+      I am registering
+      <select id="early">
+        <option value="">select one</option>
+        <option value="yes">on or before July 31, 2026</option>
+        <option value="no">after July 31, 2026</option>
+      </select>.
     </div>
   </div>
 
-  <div class="gg-sp-right">
-    <div class="gg-sp-total-label" id="ggSpTotalLabel">Estimated Individual Registration Cost</div>
-    <div class="gg-sp-total" id="ggSpTotal">$157.50</div>
-    <div class="gg-sp-summary" id="ggSpSummary"></div>
-    <div class="gg-sp-breakdown" id="ggSpBreakdown"></div>
-    <div class="gg-sp-nudge" id="ggSpNudge"></div>
+  <!-- Group flow -->
+  <div id="groupFlow">
+    <div class="price-line step" id="stepGroupSize">
+      My group has
+      <input id="groupSize" type="number" min="10" value="">
+      registrations.
+    </div>
+
+    <div class="price-line step" id="stepGroupAddons">
+      Members of my group are
+      <select id="groupAddons">
+        <option value="">select one</option>
+        <option value="no">not claiming CEUs or participating in Skill Building Institutes</option>
+        <option value="yes">claiming CEUs and/or participating in Skill Building Institutes</option>
+      </select>.
+    </div>
+
+    <div class="price-line step" id="stepGroupCounts">
+      <input id="groupSkillCount" type="number" min="0" value="0">
+      are participating in half-day Skill Building Institutes and
+      <input id="groupCeuCount" type="number" min="0" value="0">
+      are claiming CEUs.
+    </div>
+
+    <div class="price-line step" id="stepGroupEarly">
+      The group is registering
+      <select id="groupEarly">
+        <option value="">select one</option>
+        <option value="yes">on or before July 31, 2026</option>
+        <option value="no">after July 31, 2026</option>
+      </select>.
+    </div>
   </div>
+
+  <div id="priceResult" aria-live="polite"></div>
 </div>
 
-<script src="script.js?v=1"></script>
+<script src="script.js?v=2"></script>
 </body>
 </html>
