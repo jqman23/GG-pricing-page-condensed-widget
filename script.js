@@ -1,5 +1,5 @@
 (function () {
-  const PRICING = {
+  const P = {
     global: 175,
     skillHalf: 50,
     skillFull: 90,
@@ -7,36 +7,31 @@
     earlyRate: 0.10,
     studentDiscount: 75,
     ceu: 50,
-    groupHalfSkill: 25,
-    groupRates: [
-      { min: 50, rate: 90 },
-      { min: 40, rate: 105 },
-      { min: 30, rate: 120 },
-      { min: 20, rate: 135 },
-      { min: 10, rate: 150 }
-    ]
+    groupHalfSkill: 25
   };
 
-  const ids = [
-    "ggSpMode",
-    "ggSpLived",
-    "ggSpStudent",
-    "ggSpCeu",
-    "ggSpEvent",
-    "ggSpSkillLength",
-    "ggSpEarly",
-    "ggSpGroupSize",
-    "ggSpGroupAddons",
-    "ggSpGroupSkills",
-    "ggSpGroupCeus",
-    "ggSpGroupEarly"
+  const $ = id => document.getElementById(id);
+
+  const fields = [
+    "mode",
+    "lived",
+    "student",
+    "ceu",
+    "event",
+    "skillLength",
+    "early",
+    "groupSize",
+    "groupAddons",
+    "groupSkillCount",
+    "groupCeuCount",
+    "groupEarly"
   ];
 
-  ids.forEach(id => {
-    const el = document.getElementById(id);
+  fields.forEach(id => {
+    const el = $(id);
     if (!el) return;
-    el.addEventListener("change", updatePrice);
-    el.addEventListener("input", updatePrice);
+    el.addEventListener("change", update);
+    el.addEventListener("input", update);
   });
 
   function money(value) {
@@ -48,248 +43,185 @@
     });
   }
 
-  function show(el, shouldShow) {
-    el.style.display = shouldShow ? "" : "none";
+  function show(id, on) {
+    $(id).style.display = on ? "block" : "none";
   }
 
-  function numberValue(id, min, max) {
-    const el = document.getElementById(id);
-    let value = parseInt(el.value, 10);
-
-    if (isNaN(value)) value = min;
-    if (value < min) value = min;
-    if (typeof max === "number" && value > max) value = max;
-
-    el.value = value;
-    return value;
+  function hideResult() {
+    $("priceResult").classList.remove("show");
+    $("priceResult").textContent = "";
   }
 
-  function groupRateFor(size) {
-    for (const tier of PRICING.groupRates) {
-      if (size >= tier.min) return tier.rate;
-    }
+  function showPrice(label, price) {
+    $("priceResult").textContent = `${label}: ${money(price)}`;
+    $("priceResult").classList.add("show");
+    emitHeight();
+  }
 
+  function groupRate(size) {
+    if (size >= 50) return 90;
+    if (size >= 40) return 105;
+    if (size >= 30) return 120;
+    if (size >= 20) return 135;
     return 150;
   }
 
-  function tierNudgeFor(size) {
-    const bands = [
-      { min: 18, max: 19, next: 20 },
-      { min: 27, max: 29, next: 30 },
-      { min: 35, max: 39, next: 40 },
-      { min: 43, max: 49, next: 50 }
-    ];
-
-    return bands.find(b => size >= b.min && size <= b.max);
+  function num(id, fallback) {
+    const value = parseInt($(id).value, 10);
+    return isNaN(value) ? fallback : value;
   }
 
-  function render(total, summary, lines, nudgeText) {
-    document.getElementById("ggSpTotal").textContent = money(Math.max(total, 0));
-    document.getElementById("ggSpSummary").textContent = summary;
-    document.getElementById("ggSpBreakdown").innerHTML = lines.map(line => `<div>${line}</div>`).join("");
+  function update() {
+    const mode = $("mode").value;
 
-    const nudge = document.getElementById("ggSpNudge");
-    nudge.textContent = nudgeText || "";
-    nudge.style.display = nudgeText ? "block" : "none";
+    show("individualFlow", mode === "individual");
+    show("groupFlow", mode === "group");
+
+    if (!mode) {
+      resetAfterMode();
+      hideResult();
+      return;
+    }
+
+    if (mode === "individual") updateIndividual();
+    if (mode === "group") updateGroup();
 
     emitHeight();
   }
 
-  function updatePrice() {
-    const mode = document.getElementById("ggSpMode").value;
-
-    show(document.getElementById("ggSpIndividualFlow"), mode === "individual");
-    show(document.getElementById("ggSpGroupFlow"), mode === "group");
-
-    if (mode === "group") {
-      updateGroupPrice();
-    } else {
-      updateIndividualPrice();
-    }
+  function resetAfterMode() {
+    [
+      "stepLived",
+      "stepStudent",
+      "stepCeu",
+      "stepEvent",
+      "stepSkillLength",
+      "stepEarly",
+      "stepGroupSize",
+      "stepGroupAddons",
+      "stepGroupCounts",
+      "stepGroupEarly"
+    ].forEach(id => show(id, false));
   }
 
-  function updateIndividualPrice() {
-    document.getElementById("ggSpTotalLabel").textContent = "Estimated Individual Registration Cost";
+  function updateIndividual() {
+    const lived = $("lived").value;
+    const student = $("student").value;
+    const ceu = $("ceu").value;
+    const event = $("event").value;
+    const skillLength = $("skillLength").value;
+    const early = $("early").value;
 
-    const eventType = document.getElementById("ggSpEvent").value;
-    const hasGlobal = eventType === "global" || eventType === "both";
-    const hasSkill = eventType === "skill" || eventType === "both";
+    show("stepLived", true);
+    show("stepStudent", !!lived);
+    show("stepCeu", !!lived && !!student);
+    show("stepEvent", !!lived && !!student && !!ceu);
 
-    show(document.getElementById("ggSpSkillLine"), hasSkill);
-    show(document.getElementById("ggSpEarlyLine"), hasGlobal);
+    const needsSkillLength = event === "skill" || event === "both";
+    const needsEarly = event === "global" || event === "both";
 
-    const studentSelect = document.getElementById("ggSpStudent");
-    if (!hasGlobal) {
-      studentSelect.value = "no";
-      studentSelect.disabled = true;
-    } else {
-      studentSelect.disabled = false;
+    show("stepSkillLength", !!event && needsSkillLength);
+    show("stepEarly", !!event && needsEarly && (!needsSkillLength || !!skillLength));
+
+    if (!lived || !student || !ceu || !event) {
+      hideResult();
+      return;
     }
 
-    const lived = document.getElementById("ggSpLived").value === "yes";
-    const student = document.getElementById("ggSpStudent").value === "yes";
-    const ceu = document.getElementById("ggSpCeu").value === "yes";
-    const early = hasGlobal && document.getElementById("ggSpEarly").value === "before";
-    const skillLength = document.getElementById("ggSpSkillLength").value;
-
-    show(document.getElementById("ggSpLivedNote"), lived);
-
-    let total = 0;
-    let lines = [];
-    let summary = "";
-
-    if (eventType === "global") {
-      total = PRICING.global;
-      summary = "Global Gathering only";
-      lines.push(`Global Gathering: ${money(PRICING.global)}`);
-
-      if (early) {
-        const discount = PRICING.global * PRICING.earlyRate;
-        total -= discount;
-        lines.push(`Early Bird Discount: -${money(discount)}`);
-      }
-
-      if (student) {
-        total -= PRICING.studentDiscount;
-        lines.push(`Student Discount: -${money(PRICING.studentDiscount)}`);
-      }
-
-      if (lived) {
-        total = 0;
-        lines = ["Lived Experience Scholarship applied"];
-      }
-
-      if (ceu) {
-        total += PRICING.ceu;
-        lines.push(`CEU fee: +${money(PRICING.ceu)}`);
-      }
+    if (needsSkillLength && !skillLength) {
+      hideResult();
+      return;
     }
 
-    if (eventType === "skill") {
-      const skillPrice = skillLength === "half" ? PRICING.skillHalf : PRICING.skillFull;
-
-      total = skillPrice;
-      summary = skillLength === "half"
-        ? "Half-day Skill Building Institutes only"
-        : "Full-day Skill Building Institutes only";
-
-      lines.push(`${skillLength === "half" ? "Half-day" : "Full-day"} Skill Building Institutes: ${money(skillPrice)}`);
-      lines.push("Early Bird and Student discounts do not apply to Skill Building Institutes only.");
-
-      if (lived) {
-        total = 0;
-        lines = ["Lived Experience Scholarship applied"];
-      }
-
-      if (ceu) {
-        lines.push("CEUs included at no additional cost for Skill Building Institutes.");
-      }
+    if (needsEarly && !early) {
+      hideResult();
+      return;
     }
 
-    if (eventType === "both") {
-      const skillPrice = skillLength === "half" ? PRICING.skillHalf : PRICING.skillFull;
-      const subtotal = PRICING.global + skillPrice;
+    let price = 0;
 
-      total = subtotal;
-      summary = skillLength === "half"
-        ? "Global Gathering + half-day Skill Building Institutes"
-        : "Global Gathering + full-day Skill Building Institutes";
-
-      lines.push(`Global Gathering: ${money(PRICING.global)}`);
-      lines.push(`${skillLength === "half" ? "Half-day" : "Full-day"} Skill Building Institutes: ${money(skillPrice)}`);
-
-      if (early) {
-        const discount = subtotal * PRICING.earlyRate;
-        total -= discount;
-        lines.push(`Early Bird Discount: -${money(discount)}`);
-      }
-
-      total -= PRICING.bundleDiscount;
-      lines.push(`Bundle Discount: -${money(PRICING.bundleDiscount)}`);
-
-      if (student) {
-        total -= PRICING.studentDiscount;
-        lines.push(`Student Discount: -${money(PRICING.studentDiscount)}`);
-      }
-
-      if (lived) {
-        total = 0;
-        lines = ["Lived Experience Scholarship applied"];
-      }
-
-      if (ceu) {
-        total += PRICING.ceu;
-        lines.push(`CEU fee: +${money(PRICING.ceu)}`);
-      }
+    if (event === "global") {
+      price = P.global;
     }
 
-    render(total, summary, lines, "");
+    if (event === "skill") {
+      price = skillLength === "half" ? P.skillHalf : P.skillFull;
+    }
+
+    if (event === "both") {
+      price = P.global + (skillLength === "half" ? P.skillHalf : P.skillFull);
+      price -= P.bundleDiscount;
+    }
+
+    if (needsEarly && early === "yes") {
+      const earlyBase = event === "both"
+        ? P.global + (skillLength === "half" ? P.skillHalf : P.skillFull)
+        : P.global;
+
+      price -= earlyBase * P.earlyRate;
+    }
+
+    if (student === "yes" && event !== "skill") {
+      price -= P.studentDiscount;
+    }
+
+    if (lived === "yes") {
+      price = 0;
+    }
+
+    if (ceu === "yes" && event !== "skill") {
+      price += P.ceu;
+    }
+
+    showPrice("Estimated cost", price);
   }
 
-  function updateGroupPrice() {
-    document.getElementById("ggSpTotalLabel").textContent = "Estimated Group Registration Cost";
+  function updateGroup() {
+    const groupSizeRaw = $("groupSize").value;
+    const groupAddons = $("groupAddons").value;
+    const groupEarly = $("groupEarly").value;
 
-    const groupSize = numberValue("ggSpGroupSize", 10, 999);
-    const groupRate = groupRateFor(groupSize);
-    const globalSubtotal = groupSize * groupRate;
-    const early = document.getElementById("ggSpGroupEarly").value === "before";
-    const addons = document.getElementById("ggSpGroupAddons").value === "yes";
+    show("stepGroupSize", true);
 
-    show(document.getElementById("ggSpGroupAddonLines"), addons);
+    const groupSize = num("groupSize", 0);
+    const validGroupSize = groupSize >= 10;
 
-    let total = globalSubtotal;
-    let lines = [
-      `${groupSize} Global Gathering registrations x ${money(groupRate)}: ${money(globalSubtotal)}`
-    ];
+    show("stepGroupAddons", validGroupSize);
+    show("stepGroupCounts", validGroupSize && groupAddons === "yes");
+    show("stepGroupEarly", validGroupSize && !!groupAddons);
 
-    if (early) {
-      const discount = globalSubtotal * PRICING.earlyRate;
-      total -= discount;
-      lines.push(`Early Bird Discount: -${money(discount)}`);
+    if (!groupSizeRaw || !validGroupSize || !groupAddons || !groupEarly) {
+      hideResult();
+      return;
     }
 
-    if (addons) {
-      const groupSkills = numberValue("ggSpGroupSkills", 0, groupSize);
-      const groupCeus = numberValue("ggSpGroupCeus", 0, groupSize);
+    const rate = groupRate(groupSize);
+    let groupTotal = groupSize * rate;
 
-      if (groupSkills > 0) {
-        const skillSubtotal = groupSkills * PRICING.groupHalfSkill;
-        total += skillSubtotal;
-        lines.push(`Half-day Skill Building Institutes: ${groupSkills} x ${money(PRICING.groupHalfSkill)} = ${money(skillSubtotal)}`);
-      }
-
-      if (groupCeus > 0) {
-        const ceuSubtotal = groupCeus * PRICING.ceu;
-        total += ceuSubtotal;
-        lines.push(`CEUs: ${groupCeus} x ${money(PRICING.ceu)} = ${money(ceuSubtotal)}`);
-      }
-    } else {
-      document.getElementById("ggSpGroupSkills").value = 0;
-      document.getElementById("ggSpGroupCeus").value = 0;
+    if (groupEarly === "yes") {
+      groupTotal -= groupTotal * P.earlyRate;
     }
 
-    const band = tierNudgeFor(groupSize);
-    const nudgeText = band
-      ? `Adding ${band.next - groupSize} more registrant${band.next - groupSize === 1 ? "" : "s"} lowers your per-person Global Gathering rate.`
-      : "";
+    if (groupAddons === "yes") {
+      const skillCount = Math.min(num("groupSkillCount", 0), groupSize);
+      const ceuCount = Math.min(num("groupCeuCount", 0), groupSize);
 
-    render(
-      total,
-      `Group registration: ${groupSize} people at ${money(groupRate)} per Global Gathering registration`,
-      lines,
-      nudgeText
-    );
+      groupTotal += skillCount * P.groupHalfSkill;
+      groupTotal += ceuCount * P.ceu;
+    }
+
+    const perPerson = groupTotal / groupSize;
+    showPrice("Estimated average cost per person", perPerson);
   }
 
   function emitHeight() {
-    const root = document.getElementById("ggSimplePricingWidget");
+    const root = $("ggPriceWidget");
     if (!root) return;
 
     window.parent.postMessage({
-      ggSimplePricingWidgetHeight: root.scrollHeight + 32
+      ggPriceWidgetHeight: root.scrollHeight + 24
     }, "*");
   }
 
-  window.addEventListener("resize", emitHeight);
-  updatePrice();
+  update();
 })();
