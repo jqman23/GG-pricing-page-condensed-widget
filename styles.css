@@ -1,0 +1,194 @@
+* {
+  box-sizing: border-box;
+  font-family: "Montserrat", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background: transparent;
+}
+
+#ggSimplePricingWidget {
+  width: 100%;
+  max-width: 1180px;
+  margin: 10px auto 20px;
+  padding: 0 12px;
+  display: grid;
+  grid-template-columns: 1.15fr .85fr;
+  gap: 24px;
+  color: #122345;
+}
+
+.gg-sp-left,
+.gg-sp-right {
+  background: #ffffffee;
+  border-radius: 28px;
+  padding: 26px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.10);
+}
+
+.gg-sp-left {
+  border-top: 8px solid #122345;
+}
+
+.gg-sp-right {
+  border-top: 8px solid rgba(18,35,69,.12);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 280px;
+  background:
+    linear-gradient(rgba(255,255,255,.90), rgba(255,255,255,.90)),
+    radial-gradient(circle at top right, rgba(249,139,44,.18), transparent 36%),
+    radial-gradient(circle at bottom left, rgba(24,112,137,.16), transparent 40%),
+    #ffffff;
+}
+
+.gg-sp-kicker {
+  font-size: .82rem;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: #00000066;
+  margin-bottom: 18px;
+}
+
+.gg-sp-line {
+  font-size: 1.35rem;
+  line-height: 1.8;
+  font-weight: 500;
+  margin: 8px 0;
+}
+
+select,
+input[type="number"] {
+  appearance: none;
+  -webkit-appearance: none;
+  border: 2px solid rgba(18,35,69,.14);
+  border-radius: 14px;
+  background: #f7f8fb;
+  color: #122345;
+  font: inherit;
+  font-size: 1.05rem;
+  font-weight: 700;
+  padding: 9px 38px 9px 13px;
+  margin: 0 4px;
+  outline: none;
+  transition: .18s ease;
+}
+
+select {
+  background-image:
+    linear-gradient(45deg, transparent 50%, #122345 50%),
+    linear-gradient(135deg, #122345 50%, transparent 50%);
+  background-position:
+    calc(100% - 18px) 54%,
+    calc(100% - 12px) 54%;
+  background-size: 6px 6px, 6px 6px;
+  background-repeat: no-repeat;
+}
+
+input[type="number"] {
+  width: 92px;
+  padding-right: 12px;
+  text-align: center;
+}
+
+select:focus,
+input[type="number"]:focus {
+  border-color: #187089;
+  box-shadow: 0 0 0 4px rgba(24,112,137,.12);
+  background-color: #ffffff;
+}
+
+select:disabled {
+  opacity: .45;
+  cursor: not-allowed;
+}
+
+.gg-sp-note {
+  display: none;
+  margin: 10px 0 14px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: rgba(190,190,123,.18);
+  border-left: 4px solid #bebe7b;
+  color: #122345;
+  font-size: .9rem;
+  line-height: 1.5;
+  font-weight: 600;
+}
+
+.gg-sp-total-label {
+  font-size: .78rem;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: #00000066;
+  margin-bottom: 14px;
+}
+
+.gg-sp-total {
+  font-size: 4.4rem;
+  line-height: 1;
+  font-weight: 700;
+  letter-spacing: -.05em;
+  color: #122345;
+  margin-bottom: 14px;
+}
+
+.gg-sp-summary {
+  font-size: .98rem;
+  line-height: 1.55;
+  color: #00000088;
+  font-weight: 600;
+  margin-bottom: 14px;
+}
+
+.gg-sp-breakdown {
+  font-size: .9rem;
+  line-height: 1.7;
+  color: #122345;
+  font-weight: 600;
+}
+
+.gg-sp-breakdown div {
+  margin: 2px 0;
+}
+
+.gg-sp-nudge {
+  display: none;
+  margin-top: 16px;
+  padding: 11px 14px;
+  border-radius: 14px;
+  background: rgba(249,139,44,.14);
+  color: #831f16;
+  font-size: .9rem;
+  line-height: 1.45;
+  font-weight: 700;
+}
+
+@media (max-width: 820px) {
+  #ggSimplePricingWidget {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .gg-sp-line {
+    font-size: 1.08rem;
+    line-height: 1.9;
+  }
+
+  select,
+  input[type="number"] {
+    font-size: .95rem;
+    max-width: 100%;
+  }
+
+  .gg-sp-total {
+    font-size: 3.3rem;
+  }
+}
